@@ -4,46 +4,48 @@ import 'package:http/http.dart' as http;
 
 class MoviesProvider extends ChangeNotifier{
   
-  String _apiKey='6c39d0721c26c0eda41d05d6caef56a8';
-  String _baseUrl='api.themoviedb.org';
-  String _language='es-ES';
+  final String _apiKey='6c39d0721c26c0eda41d05d6caef56a8';
+  final String _baseUrl='api.themoviedb.org';
+  final String _language='es-ES';
 
   List<Movie> onDisplayMovies=[];
   List<Movie> popularMovies=[];
+  
+  int _popularPage=0;
 
   MoviesProvider(){
 
     print('MoviesProvider inicializando');
-    this.getOnDisplayMovies();
-    this.getPopularMovies();
+    getOnDisplayMovies();
+    getPopularMovies();
+  }
+
+  Future<String> _getJsonData(String endpoint, [int page=1]) async{
+    var url = Uri.https(_baseUrl, endpoint, {
+      'api_key': _apiKey,
+      'language': _language,
+      'page': '$page',
+    });
+
+    final response = await http.get(url);
+    return response.body;
   }
 
   getOnDisplayMovies() async {
-    var url = Uri.https(_baseUrl, '3/movie/now_playing', {
-      'api_key': _apiKey,
-      'language': _language,
-      'page': '1',
-    });
+    final jsonData =await _getJsonData('3/movie/now_playing');
+    final nowPlayinResponse = NowPlayingResponse.fromJson(jsonData);
 
-  final response = await http.get(url);
-  final nowPlayinResponse = NowPlayingResponse.fromJson(response.body);
-
-  onDisplayMovies=nowPlayinResponse.results;
-  
-  notifyListeners();
+    onDisplayMovies=nowPlayinResponse.results;
+    
+    notifyListeners();
   }
 
   getPopularMovies()async{
-    var url = Uri.https(_baseUrl, '3/movie/popular', {
-      'api_key': _apiKey,
-      'language': _language,
-      'page': '1',
-    });
+    _popularPage=_popularPage+1;
+    final jsonData =await _getJsonData('3/movie/popular', );
+    final populaResponse = PopulaResponse.fromJson(jsonData);
 
-  final response = await http.get(url);
-  final populaResponse = PopulaResponse.fromJson(response.body);
-
-  popularMovies=[...popularMovies, ...populaResponse.results];
-  notifyListeners();
+    popularMovies=[...popularMovies, ...populaResponse.results];
+    notifyListeners();
   }
 }
