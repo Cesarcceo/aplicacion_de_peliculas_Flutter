@@ -42,7 +42,7 @@ class MoviesProvider extends ChangeNotifier{
 
   getPopularMovies()async{
     _popularPage=_popularPage+1;
-    final jsonData =await _getJsonData('3/movie/popular', );
+    final jsonData =await _getJsonData('3/movie/popular', _popularPage);
     final populaResponse = PopulaResponse.fromJson(jsonData);
 
     popularMovies=[...popularMovies, ...populaResponse.results];
