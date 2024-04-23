@@ -10,8 +10,6 @@ class HomeScreen extends StatelessWidget {
 
     final moviesProvider=Provider.of<MoviesProvider>(context);
 
-    print(moviesProvider.onDisplayMovies);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('peliculas en cines'),

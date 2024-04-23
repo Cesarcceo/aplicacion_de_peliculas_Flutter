@@ -1,4 +1,7 @@
+import 'package:aplicacion_de_peliculas/models/models.dart';
+import 'package:aplicacion_de_peliculas/providers/movies_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CastingCards extends StatelessWidget {
 
@@ -8,15 +11,30 @@ class CastingCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 30),
-      width: double.infinity,
-      height: 190,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 10,
-        itemBuilder: (_, int index) => _CastCard(),
-      ),
+
+    final moviesProvider=Provider.of<MoviesProvider>(context, listen: false);
+
+    return FutureBuilder(
+      future: moviesProvider.getMovieCast(movieId), 
+      builder: (_, AsyncSnapshot<List<Cast>> snapshot){
+
+        if(!snapshot.hasData){
+
+        }
+
+        final cast =snapshot.data;
+
+        return Container(
+          margin: const EdgeInsets.only(bottom: 30),
+          width: double.infinity,
+          height: 190,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 10,
+            itemBuilder: (_, int index) => _CastCard(),
+          ),
+        );
+      }
     );
   }
 }
