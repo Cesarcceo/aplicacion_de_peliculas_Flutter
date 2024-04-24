@@ -1,17 +1,19 @@
-import 'package:aplicacion_de_peliculas/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:aplicacion_de_peliculas/models/models.dart';
+
 class MoviesProvider extends ChangeNotifier{
   
-  final String _apiKey='6c39d0721c26c0eda41d05d6caef56a8';
+  final String _apiKey='1b645bb9a383a8408792fd98c5d058a3';
   final String _baseUrl='api.themoviedb.org';
   final String _language='es-ES';
 
   List<Movie> onDisplayMovies=[];
   List<Movie> popularMovies=[];
+  // List<Cast> moviesCast=[];
   
-  Map <int, List<Cast>> moviesCast ={};
+  Map<int, List<Cast>> moviesCast ={};
 
   int _popularPage=0;
 
@@ -28,6 +30,7 @@ class MoviesProvider extends ChangeNotifier{
       'language': _language,
       'page': '$page',
     });
+    print(url);
 
     final response = await http.get(url);
     return response.body;
@@ -52,10 +55,10 @@ class MoviesProvider extends ChangeNotifier{
   }
 
   Future<List<Cast>> getMovieCast(int movieId) async{
-    print('pidinedo hattp -> cast');
+
 
     final jsonData =await _getJsonData('3/movie/$movieId/credits');
-    final creditsResponse =CreditsResponse.fromJson(jsonData);
+    final creditsResponse =CreditsResponse.fromRowJson(jsonData);
 
     moviesCast[movieId]=creditsResponse.cast;
 
