@@ -37,7 +37,7 @@ class MovieSearchDelegate extends SearchDelegate{
 
   Widget _emptyContainer(){
     return Container(
-        child: Center(
+        child: const Center(
           child: Icon(Icons.movie_creation_outlined,color: Colors.black38, size: 130,),
         ),
       );
@@ -51,9 +51,12 @@ class MovieSearchDelegate extends SearchDelegate{
     }
 
     final moviesProvider=Provider.of<MoviesProvider>(context);
+    moviesProvider.getSuggestionsByQuery(query);
 
-    return FutureBuilder(
-      future: moviesProvider.searchMovies(query),
+
+
+    return StreamBuilder(
+      stream: moviesProvider.suggestionStream,
       builder: ( _ , AsyncSnapshot<List<Movie>> snapshot){
         if(!snapshot.hasData) return _emptyContainer() ;
 
